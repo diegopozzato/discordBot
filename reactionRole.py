@@ -195,4 +195,4 @@ async def help(ctx):
     await print("ciao")
 
 
-client.run("TOKEN")
+client.run("MTEwNjMwNDUxMzIxNzk0MTU3NA.GKcNYw.zMh_2nh2UzD1tiLuwo1UhOVpE-jfNfl7sXod-g")
