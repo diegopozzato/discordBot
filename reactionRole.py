@@ -28,7 +28,7 @@ Profile_list=[]
 async def on_ready():
     print("Im Online!")
 
-'''
+
 #REACTION ROLE APPLICATION
 @commands.has_permissions(manage_roles=True)
 @client.command(pass_context=True)
@@ -80,7 +80,6 @@ async def rreaction(ctx, msgID: int, *args):
                 pass
 
     Profile_list.append(Profile(msgID, role, emoji_id))
-'''
 
 #ADD REACTION
 @client.event
@@ -196,4 +195,4 @@ async def help(ctx):
     await print("ciao")
 
 
-client.run("TOKEN")
+client.run("")
