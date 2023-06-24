@@ -12,6 +12,7 @@ Bot_prefix = "."
 
 client = commands.Bot(command_prefix=Bot_prefix, intents=intents, activity=activity)
 
+
 async def load():
     for file in os.listdir('./cogs'):
         if file.endswith('.py'):
