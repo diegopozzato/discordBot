@@ -29,4 +29,3 @@ async def on_ready():
 load_dotenv()
 
 client.run(os.environ['TOKEN'])
-
