@@ -11,10 +11,14 @@ class Music(commands.Cog):
         channel = ctx.author.voice.channel
         await channel.connect()
 
-
     @commands.command(name="leave", aliases=["disconnect", "l"])
     async def leave(self, ctx):
         await ctx.voice_client.disconnect()
+
+    @commands.command(name="play")
+    async def play(self, ctx, *args):
+        for arg in args:
+            print(args)
 
 
 async def setup(client):
