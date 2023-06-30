@@ -1,6 +1,21 @@
 import discord
 from discord.ext import commands
 import asyncio
+import sqlite3
+
+db_path = './DB/imageRecognizer_DB'
+
+conn = sqlite3.connect(db_path)
+
+cursor = conn.cursor()
+
+cursor.execute('''CREATE TABLE IF NOT EXISTS Profiles
+                  (id INTEGER PRIMARY KEY AUTOINCREMENT,
+                  message_id INTEGER,
+                  role TEXT,
+                  emoji_id TEXT)''')
+
+conn.commit()
 
 
 class Profile:
@@ -95,8 +110,32 @@ class ReactionRole(commands.Cog):
                     pass
 
         Profile_list.append(Profile(msgID, role, emoji_id))
+    '''
+            print(emoji_id)
+    
+            db_path = './DB/imageRecognizer_DB'
+    
+            # Connect to the database
+            conn = sqlite3.connect(db_path)
+            cursor = conn.cursor()
+    
+            # Insert the data into the 'profiles' table
+            cursor.execute("INSERT INTO Profiles (message_id, role, emoji_id) VALUES (?, ?, ?)",
+                           (msgID, ','.join(role), ','.join(emoji_id)))
+    
+            # Retrieve data from the 'profiles' table
+            cursor.execute("SELECT * FROM Profiles")
+            data = cursor.fetchall()
+    
+            # Print the retrieved data
+            for row in data:
+                print(row)
+    
+            # Close the connection
+            conn.close()
+    '''
 
-    # ADD REACTION
+    # Add reaction
     @commands.Cog.listener()
     async def on_raw_reaction_add(self, payload):
         if payload.user_id == self.client.user.id:
