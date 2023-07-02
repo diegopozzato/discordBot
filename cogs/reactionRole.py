@@ -12,10 +12,10 @@ cursor = conn.cursor()
 cursor.execute('''CREATE TABLE IF NOT EXISTS Profiles
                   (id INTEGER PRIMARY KEY AUTOINCREMENT,
                   message_id INTEGER,
-                  role TEXT,
-                  emoji_id TEXT)''')
-
+                  role BLOB,
+                  emoji_id BLOB)''')
 conn.commit()
+conn.close()
 
 
 class Profile:
@@ -110,30 +110,30 @@ class ReactionRole(commands.Cog):
                     pass
 
         Profile_list.append(Profile(msgID, role, emoji_id))
-    '''
-            print(emoji_id)
-    
-            db_path = './DB/imageRecognizer_DB'
-    
-            # Connect to the database
-            conn = sqlite3.connect(db_path)
-            cursor = conn.cursor()
-    
-            # Insert the data into the 'profiles' table
-            cursor.execute("INSERT INTO Profiles (message_id, role, emoji_id) VALUES (?, ?, ?)",
-                           (msgID, ','.join(role), ','.join(emoji_id)))
-    
-            # Retrieve data from the 'profiles' table
-            cursor.execute("SELECT * FROM Profiles")
-            data = cursor.fetchall()
-    
-            # Print the retrieved data
-            for row in data:
-                print(row)
-    
-            # Close the connection
-            conn.close()
-    '''
+        '''
+                db_path = './DB/imageRecognizer_DB'
+        
+                # Connect to the database
+                conn = sqlite3.connect(db_path)
+                cursor = conn.cursor()
+        
+                emoji_ids = ','.join(str(emoji) for emoji in emoji_id)  # Convert each Emoji object to a string
+                roles = ','.join(role)  # Join the role list using commas
+        
+                cursor.execute("INSERT INTO Profiles (message_id, role, emoji_id) VALUES (?, ?, ?)",
+                               (msgID, roles, emoji_ids))
+        
+                # Retrieve data from the 'profiles' table
+                cursor.execute("SELECT * FROM Profiles")
+                data = cursor.fetchall()
+        
+                # Print the retrieved data
+                for row in data:
+                    print(row)
+        
+                # Close the connection
+                conn.close()
+        '''
 
     # Add reaction
     @commands.Cog.listener()
@@ -165,7 +165,7 @@ class ReactionRole(commands.Cog):
                 await addRole(i, y, guild, payload)
 
 
-    #REMOVE REACTION
+    #Remove reaction
     @commands.Cog.listener()
     async def on_raw_reaction_remove(self, payload):
         if payload.user_id == self.client.user.id:
@@ -204,6 +204,24 @@ class ReactionRole(commands.Cog):
         for i in range(len(Profile_list)):
             if message_id == Profile_list[i].message_id:
                 Profile_list.remove(Profile_list[i])
+
+    '''
+        message_id = payload.message_id
+
+        db_path = './DB/imageRecognizer_DB'
+
+        # Connect to the database
+        conn = sqlite3.connect(db_path)
+        cursor = conn.cursor()
+
+        cursor.execute("SELECT id FROM Profiles WHERE message_id = ?", (message_id,))
+        profile_ids = cursor.fetchall()
+
+        for profile_id in profile_ids:
+            cursor.execute("DELETE FROM Profiles WHERE id = ?", (profile_id[0],))
+
+        conn.close()
+    '''
 
 
 async def setup(client):
