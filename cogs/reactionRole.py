@@ -3,7 +3,7 @@ from discord.ext import commands
 import asyncio
 import sqlite3
 
-db_path = './DB/imageRecognizer_DB'
+db_path = './DB/reactionRole_DB'
 
 conn = sqlite3.connect(db_path)
 
