@@ -71,12 +71,12 @@ class ReactionRole(commands.Cog):
             else:
                 embed = discord.Embed(title="❌ CommandMentionError",
                                       description=".rreaction <messageId> <@role> <@role> ...", color=0xC53131)
-                return await ctx.send(embed=embed)
+                return await ctx.reply(embed=embed)
 
         for i in role:
             embed = discord.Embed(color=0x2A69CB, description="React with the emoji you want")
             embed.add_field(name="Emoji for:", value=i)
-            role_message = await ctx.send(embed=embed)
+            role_message = await ctx.reply(embed=embed)
             role_message_id = role_message.id
 
             try:

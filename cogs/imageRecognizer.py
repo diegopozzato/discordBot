@@ -1,15 +1,12 @@
 from io import BytesIO
 from discord.ext import commands
 import requests
-from PIL import Image
 import cv2 as cv
 import numpy as np
-import matplotlib.pyplot as plt
 import os
 from tensorflow.keras import models
 
 TARGET_RESOLUTION = 64
-
 
 class imageRecognizer(commands.Cog):
     def init(self, client):
@@ -18,22 +15,30 @@ class imageRecognizer(commands.Cog):
     @commands.command()
     async def imageReader(self, ctx):
 
-        print("test")
+        if os.path.exists('./NeuralNetwork/DogVsCat_Classificator.model'):
+            model = models.load_model('./NeuralNetwork/DogVsCat_Classificator.model')
 
-        url = ctx.message.attachments[0]
-        img_data = requests.get(url)
-        pilImage = Image.open(BytesIO(img_data.content))
-        pilImage.resize((TARGET_RESOLUTION, TARGET_RESOLUTION), Image.ANTIALIAS)
+            try:
+                
+                url = ctx.message.attachments[0]
+                resp = requests.get(url, stream=True).raw
+                image = np.asarray(bytearray(resp.read()), dtype="uint8")
+                image = cv.imdecode(image, cv.IMREAD_COLOR)
+                img = cv.resize(image, (64, 64))
 
-        if os.path.exists('./NeuralNetwork/Dog_Classifier.model'):
-            print("test2")
-            model = models.load_model('./NeuralNetwork/Dog_Classifier.model')
-            model.summary()
+                prediction = model.predict(np.array([img]) / 255)
+                index = np.argmax(prediction)
 
-            prediction = model.predict(np.array([str(pilImage)]) / 255)
-            index = np.argmax(prediction)
+                if index == 1:
+                    await ctx.reply("DOGGO")
+                else:
+                    await ctx.reply("CATTO")
 
-            print(index)
+            except:
+                await ctx.reply("IMAGE ERROR! make sure you attached an image")
+
+
+
 
 
 async def setup(client):
